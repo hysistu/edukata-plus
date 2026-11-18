@@ -18,7 +18,32 @@ const s3Configured = Boolean(
   process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY,
 )
 
+function getServerURL() {
+  if (process.env.NEXT_PUBLIC_SERVER_URL) return process.env.NEXT_PUBLIC_SERVER_URL
+  if (process.env.PAYLOAD_PUBLIC_SERVER_URL) return process.env.PAYLOAD_PUBLIC_SERVER_URL
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  }
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  return 'http://localhost:3000'
+}
+
+/** Neon sometimes appends channel_binding=require which can break some Node pg clients. */
+function getDatabaseURL() {
+  const raw = process.env.DATABASE_URL || ''
+  if (!raw) return ''
+  try {
+    const url = new URL(raw)
+    url.searchParams.delete('channel_binding')
+    if (!url.searchParams.has('sslmode')) url.searchParams.set('sslmode', 'require')
+    return url.toString()
+  } catch {
+    return raw
+  }
+}
+
 export default buildConfig({
+  serverURL: getServerURL(),
   admin: {
     user: Users.slug,
     importMap: {
@@ -37,7 +62,7 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: getDatabaseURL(),
     },
   }),
   sharp,
