@@ -10,6 +10,7 @@ import { Media } from './collections/Media'
 import { Messages } from './collections/Messages'
 import { Users } from './collections/Users'
 import { Site } from './globals/Site'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -64,6 +65,7 @@ export default buildConfig({
     pool: {
       connectionString: getDatabaseURL(),
     },
+    prodMigrations: migrations,
   }),
   sharp,
   plugins: [
