@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { revalidatePath } from 'next/cache'
 
 export const Site: GlobalConfig = {
   slug: 'site',
@@ -8,6 +9,15 @@ export const Site: GlobalConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidatePath('/')
+        revalidatePath('/impressum')
+        revalidatePath('/datenschutz')
+      },
+    ],
   },
   fields: [
     {

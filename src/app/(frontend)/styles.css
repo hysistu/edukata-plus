@@ -45,9 +45,31 @@ body {
   font-weight: 700;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.btn-primary {
+  background: var(--color-forest);
+  color: #ffffff !important;
+}
+
+.btn-primary:hover {
+  background: var(--color-forest-deep);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-ink) !important;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 30%, transparent);
+}
+
+.btn-secondary:hover {
+  border-color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 ::selection {

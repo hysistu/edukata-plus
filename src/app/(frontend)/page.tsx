@@ -1,3 +1,5 @@
+import { connection } from 'next/server'
+
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { About } from '@/components/sections/About'
@@ -8,7 +10,12 @@ import { Process } from '@/components/sections/Process'
 import { Services } from '@/components/sections/Services'
 import { getSiteContent } from '@/lib/site-content'
 
+// Always load fresh CMS content (do not statically cache the homepage)
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function HomePage() {
+  await connection()
   const content = await getSiteContent()
 
   return (
